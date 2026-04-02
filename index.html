@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreativeSociety.ai — The Premier AI Artist Network</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:            #06040F;
+      --surface:       #0D0A1D;
+      --elevated:      #15102C;
+      --gold:          #C8A84B;
+      --gold-light:    #E6CE82;
+      --gold-dim:      #876C29;
+      --purple:        #8B2FC9;
+      --purple-bright: #B054E8;
+      --purple-deep:   #3E1278;
+      --text:          #F0EBF8;
+      --text-muted:    #998BB0;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Syne', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    /* ── Grain overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.45;
+      mix-blend-mode: overlay;
+    }
+
+    /* ── Glass surfaces ── */
+    .glass {
+      background: rgba(13, 10, 29, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(200, 168, 75, 0.1);
+    }
+    .glass-card {
+      background: rgba(21, 16, 44, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(200, 168, 75, 0.12);
+      box-shadow:
+        0 1px 0 rgba(200, 168, 75, 0.08) inset,
+        0 24px 60px rgba(0, 0, 0, 0.5),
+        0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ── Gold gradient text ── */
+    .gold-text {
+      background: linear-gradient(135deg, #C8A84B 0%, #F0D98A 45%, #C8A84B 70%, #876C29 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Buttons ── */
+    .btn-gold {
+      display: inline-block;
+      background: linear-gradient(135deg, #C8A84B 0%, #E6CE82 50%, #C8A84B 100%);
+      background-size: 200% 200%;
+      color: #06040F;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition:
+        background-position 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    }
+    .btn-gold:hover {
+      background-position: right center;
+      transform: translateY(-3px);
+      box-shadow:
+        0 10px 36px rgba(200, 168, 75, 0.45),
+        0 2px 8px rgba(200, 168, 75, 0.2);
+    }
+    .btn-gold:active { transform: translateY(0); }
+    .btn-gold:focus-visible { outline: 2px solid #E6CE82; outline-offset: 3px; }
+
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: var(--gold-light);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(200, 168, 75, 0.35);
+      cursor: pointer;
+      transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      background: rgba(200, 168, 75, 0.07);
+      transform: translateY(-3px);
+      box-shadow: 0 0 28px rgba(200, 168, 75, 0.12);
+    }
+    .btn-ghost:active { transform: translateY(0); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+    /* ── Nav links ── */
+    .nav-link {
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 0.875rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-link:hover { color: var(--gold-light); }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link:focus-visible { outline: 2px solid var(--gold); border-radius: 2px; }
+
+    /* ── Hero ── */
+    .hero-section {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 88px;
+      overflow: hidden;
+    }
+    .hero-bg-image {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+    .hero-bg-image video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom,
+          rgba(6, 4, 15, 0.92) 0%,
+          rgba(6, 4, 15, 0.72) 18%,
+          rgba(6, 4, 15, 0.35) 45%,
+          rgba(6, 4, 15, 0.18) 62%,
+          rgba(6, 4, 15, 0.88) 100%
+        );
+    }
+
+    /* ── Animations ── */
+    @keyframes float-slow {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(28px, -18px) scale(1.04); }
+      66%       { transform: translate(-18px, 14px) scale(0.97); }
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.3); }
+    }
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer-line {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes border-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200,168,75,0); }
+      50%       { box-shadow: 0 0 18px 2px rgba(200,168,75,0.2); }
+    }
+
+    .anim-fade-up { animation: fade-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .d1 { animation-delay: 0.05s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.28s; }
+    .d4 { animation-delay: 0.42s; }
+    .d5 { animation-delay: 0.56s; }
+
+    /* ── Feature cards ── */
+    .feat-card {
+      transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+    }
+    .feat-card:hover {
+      transform: translateY(-7px);
+      box-shadow:
+        0 20px 60px rgba(139, 47, 201, 0.18),
+        0 6px 20px rgba(0, 0, 0, 0.45),
+        0 1px 0 rgba(200, 168, 75, 0.18) inset;
+      border-color: rgba(200, 168, 75, 0.28) !important;
+    }
+
+    /* ── Gallery items ── */
+    .gal-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+      transition:
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease;
+    }
+    .gal-item:hover {
+      transform: scale(1.025);
+      box-shadow:
+        0 14px 44px rgba(139, 47, 201, 0.28),
+        0 0 0 1px rgba(200, 168, 75, 0.28);
+    }
+    .gal-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .gal-item:hover img { transform: scale(1.07); }
+    .gal-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(6,4,15,0.85) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .gal-label {
+      position: absolute;
+      bottom: 0; left: 0;
+      padding: 1.1rem 1.25rem;
+    }
+
+    /* ── Divider ── */
+    .gold-line {
+      display: block;
+      width: 48px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(139,47,201,0.45); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(139,47,201,0.7); }
+
+    /* ── Stat dividers ── */
+    .stat-block + .stat-block { border-left: 1px solid rgba(200,168,75,0.1); }
+
+    /* ── Testimonial card ── */
+    .quote-mark {
+      font-family: 'Syne', sans-serif;
+      font-size: 5rem;
+      line-height: 0.8;
+      color: var(--purple);
+      opacity: 0.4;
+      font-weight: 800;
+    }
+
+    /* ── Input ── */
+    .email-input {
+      flex: 1;
+      padding: 0.9rem 1.25rem;
+      background: rgba(6, 4, 15, 0.8);
+      border: 1px solid rgba(200, 168, 75, 0.2);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .email-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+    .email-input:focus {
+      border-color: rgba(200, 168, 75, 0.5);
+      box-shadow: 0 0 0 3px rgba(200, 168, 75, 0.06);
+    }
+
+    /* ── Section wrapper ── */
+    .section-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Scroll fade-in ── */
+    .scroll-fade {
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .scroll-fade.scroll-fade-delay-1 {
+      transition-delay: 0.18s;
+    }
+    .scroll-fade.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<nav class="glass" style="
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  border-bottom: 1px solid rgba(200,168,75,0.07);
+">
+  <div style="
+    max-width: 1280px; margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  ">
+    <!-- Brand -->
+    <a href="#" style="display: flex; align-items: center; gap: 11px; text-decoration: none;">
+      <img
+        src="brand_Assets/Create_an_ultrapremium_flagship_logo_for_the_brand_delpmaspu.png"
+        alt="CreativeSociety.ai logo"
+        style="height: 42px; width: 42px; object-fit: contain;"
+      >
+      <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; letter-spacing:-0.01em; color:var(--text);">
+        creative<span class="gold-text">society.ai</span>
+      </span>
+    </a>
+
+    <!-- Links -->
+    <div style="display:flex; align-items:center; gap:2.5rem;">
+      <a href="#about"     class="nav-link">About</a>
+      <a href="#features"  class="nav-link">Features</a>
+      <a href="#gallery"   class="nav-link">Gallery</a>
+      <a href="#community" class="nav-link">Community</a>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex; align-items:center; gap:0.85rem;">
+      <a href="#" class="btn-ghost" style="padding:0.48rem 1.2rem; border-radius:7px; font-size:0.78rem;">Sign In</a>
+      <a href="#join" class="btn-gold" style="padding:0.52rem 1.35rem; border-radius:7px; font-size:0.78rem;">Join Now</a>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section class="hero-section">
+  <div class="hero-bg-image">
+    <video autoplay muted loop playsinline aria-hidden="true">
+      <source src="brand_Assets/grok-video-81d9930c-c2da-40d1-bd64-65599068614f%20(1).mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <!-- Floating ambient orbs -->
+  <div style="
+    position:absolute; top:18%; left:6%; width:520px; height:520px; border-radius:50%;
+    background:radial-gradient(circle, rgba(139,47,201,0.14) 0%, transparent 70%);
+    animation: float-slow 9s ease-in-out infinite; pointer-events:none;
+  "></div>
+  <div style="
+    position:absolute; top:35%; right:5%; width:380px; height:380px; border-radius:50%;
+    background:radial-gradient(circle, rgba(200,168,75,0.07) 0%, transparent 70%);
+    animation: float-slow 12s ease-in-out infinite reverse; pointer-events:none;
+  "></div>
+
+  <!-- Hero content -->
+  <div style="position:relative; z-index:2; text-align:center; max-width:900px; padding:0 2rem;">
+
+    <!-- Eyebrow pill -->
+    <div class="anim-fade-up d1" style="
+      display:inline-flex; align-items:center; gap:9px;
+      margin-bottom:2rem;
+      padding:0.42rem 1.2rem; border-radius:100px;
+      background:rgba(139,47,201,0.1); border:1px solid rgba(139,47,201,0.28);
+    ">
+      <span style="
+        width:7px; height:7px; border-radius:50%;
+        background:var(--purple-bright);
+        animation: pulse-dot 2.2s ease-in-out infinite;
+        display:inline-block;
+      "></span>
+      <span style="
+        font-family:'Space Grotesk',sans-serif; font-size:0.77rem;
+        letter-spacing:0.11em; color:var(--purple-bright);
+        text-transform:uppercase; font-weight:500;
+      ">The Premier AI Artist Network</span>
+    </div>
+
+    <!-- Headline -->
+    <div class="anim-fade-up d2" style="
+      display:inline-block;
+      margin-bottom:1.4rem;
+      padding:0.6rem 2.2rem 0.75rem;
+      border-radius:18px;
+      background:rgba(255,255,255,0.04);
+      backdrop-filter:blur(28px) saturate(160%);
+      -webkit-backdrop-filter:blur(28px) saturate(160%);
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.35),
+        0 1px 0 rgba(255,255,255,0.08) inset,
+        0 -1px 0 rgba(0,0,0,0.2) inset;
+    ">
+      <h1 style="
+        font-size:clamp(2rem, 4.2vw, 4.4rem);
+        line-height:1.08;
+        color:var(--text);
+        white-space:nowrap;
+        margin:0;
+      ">
+        Where <span class="gold-text">AI</span> Meets True Artistry
+      </h1>
+    </div>
+
+  </div>
+
+  <!-- Spacer so bg image panels show below text -->
+  <div style="flex:1; min-height:260px;"></div>
+
+  <!-- Scroll cue -->
+  <div class="anim-fade-up d5" style="
+    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:7px; opacity:0.45;
+  ">
+    <span style="font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted);">Scroll</span>
+    <div style="width:1px; height:38px; background:linear-gradient(to bottom,var(--gold),transparent);"></div>
+  </div>
+
+  <!-- Bottom dissolve: hero video fades to solid bg color -->
+  <div style="
+    position:absolute;bottom:0;left:0;right:0;
+    height:300px;z-index:5;pointer-events:none;
+    background:linear-gradient(to bottom, transparent 0%, #06040F 100%);
+  "></div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     ARTISTS SECTION
+═══════════════════════════════════════════ -->
+<section id="artists" style="
+  padding:7rem 0 6rem;
+  background:var(--bg);
+  position:relative; overflow:hidden;
+">
+
+  <!-- Background video -->
+  <video autoplay muted loop playsinline aria-hidden="true" style="
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    opacity:0.35;
+    z-index:0;
+  ">
+    <source src="brand_Assets/Artist%20Section%20Animated%20background.mp4" type="video/mp4">
+  </video>
+
+  <!-- Fade edges: top holds solid bg longer so join with hero is invisible -->
+  <div style="
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:
+      linear-gradient(to bottom, #06040F 0%, #06040F 8%, transparent 28%, transparent 82%, #06040F 100%),
+      linear-gradient(to right,  #06040F 0%, transparent 10%, transparent 90%, #06040F 100%);
+  "></div>
+
+  <!-- Ambient glows (sit above video) -->
+  <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:900px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(139,47,201,0.09) 0%,transparent 65%);pointer-events:none;z-index:1;"></div>
+  <div style="position:absolute;bottom:-100px;left:20%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,75,0.04) 0%,transparent 70%);pointer-events:none;z-index:1;"></div>
+
+  <div class="section-wrap" style="text-align:center;position:relative;z-index:2;">
+
+    <!-- Large heading -->
+    <div class="scroll-fade" style="margin-bottom:0.25rem;">
+      <span style="font-size:0.73rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-weight:500;">Our Community</span>
+    </div>
+    <h2 class="scroll-fade scroll-fade-delay-1" style="
+      font-family:'Syne',sans-serif;
+      font-size:clamp(3.8rem, 8.5vw, 7.65rem);
+      font-weight:800;
+      letter-spacing:-0.04em;
+      line-height:0.95;
+      color:var(--text);
+      margin-bottom:4rem;
+      text-transform:uppercase;
+    ">Artists<br><span class="gold-text" style="font-size:0.55em; letter-spacing:-0.02em;">Thriving Together</span></h2>
+
+    <!-- Artist circles row -->
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:5rem;
+      margin-bottom:4rem;
+      flex-wrap:wrap;
+    ">
+
+      <!-- Decorative circle left -->
+      <div style="
+        width:100px;height:100px;border-radius:50%;
+        background:linear-gradient(135deg,rgba(139,47,201,0.15),rgba(62,18,120,0.25));
+        border:1px solid rgba(139,47,201,0.2);
+        flex-shrink:0;
+        box-shadow:0 0 24px rgba(139,47,201,0.12);
+        align-self:center;
+      "></div>
+
+      <!-- Artist 1: Manifest Dr3ms -->
+      <div style="text-align:center;">
+        <div style="
+          width:300px;height:300px;border-radius:50%;
+          overflow:hidden;
+          border:2px solid var(--gold);
+          box-shadow:
+            0 0 0 6px rgba(200,168,75,0.08),
+            0 0 50px rgba(200,168,75,0.18),
+            0 0 100px rgba(139,47,201,0.2),
+            0 20px 60px rgba(0,0,0,0.5);
+          position:relative;
+          flex-shrink:0;
+        ">
+          <!-- Image rotated to correct orientation -->
+          <img src="brand_Assets/manifest%20the%20Artist%201.jpg" alt="Manifest Dr3ms"
+            style="
+              width:100%;height:100%;
+              object-fit:cover;
+              object-position:center 68%;
+              transform-origin:center center;
+            "
+          >
+          <!-- Color treatment -->
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(139,47,201,0.15),transparent 60%);mix-blend-mode:overlay;pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,4,15,0.5) 0%,transparent 50%);pointer-events:none;"></div>
+        </div>
+        <div style="margin-top:1.25rem;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;margin-bottom:0.25rem;">Manifest Dr3ms</div>
+          <div style="font-size:0.78rem;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;">AI Visual Artist</div>
+        </div>
+      </div>
+
+      <!-- Center decorative circle -->
+      <div style="
+        width:60px;height:60px;border-radius:50%;
+        background:linear-gradient(135deg,rgba(200,168,75,0.1),rgba(200,168,75,0.05));
+        border:1px solid rgba(200,168,75,0.2);
+        flex-shrink:0;
+        box-shadow:0 0 16px rgba(200,168,75,0.08);
+        align-self:center;
+      "></div>
+
+      <!-- Artist 2: Varbie.ai -->
+      <div style="text-align:center;">
+        <div style="
+          width:300px;height:300px;border-radius:50%;
+          overflow:hidden;
+          border:2px solid var(--gold);
+          box-shadow:
+            0 0 0 6px rgba(200,168,75,0.08),
+            0 0 50px rgba(200,168,75,0.18),
+            0 0 100px rgba(139,47,201,0.2),
+            0 20px 60px rgba(0,0,0,0.5);
+          position:relative;
+          flex-shrink:0;
+        ">
+          <img src="brand_Assets/Varbie.ai%20Artist%202.jpeg" alt="Varbie.ai"
+            style="width:100%;height:100%;object-fit:cover;object-position:center top;"
+          >
+          <!-- Color treatment -->
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(176,84,232,0.12),transparent 60%);mix-blend-mode:overlay;pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,4,15,0.5) 0%,transparent 50%);pointer-events:none;"></div>
+        </div>
+        <div style="margin-top:1.25rem;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;margin-bottom:0.25rem;">Varbie.ai</div>
+          <div style="font-size:0.78rem;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;">AI Design Artist</div>
+        </div>
+      </div>
+
+      <!-- Decorative circle right -->
+      <div style="
+        width:100px;height:100px;border-radius:50%;
+        background:linear-gradient(135deg,rgba(200,168,75,0.1),rgba(139,47,201,0.15));
+        border:1px solid rgba(200,168,75,0.15);
+        flex-shrink:0;
+        box-shadow:0 0 24px rgba(200,168,75,0.08);
+        align-self:center;
+      "></div>
+
+    </div>
+
+    <!-- Gold divider -->
+    <div style="width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 2.5rem;"></div>
+
+    <!-- Description -->
+    <p style="
+      color:var(--text-muted);
+      max-width:560px;
+      margin:0 auto 2.5rem;
+      font-size:1.02rem;
+      line-height:1.75;
+    ">
+      Join a curated network of visionary AI designers and artists pushing the boundaries of creative technology. Collaborate, showcase, and elevate your craft.
+    </p>
+
+    <!-- CTAs -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;">
+      <a href="#join"    class="btn-gold"  style="padding:0.9rem 2.25rem;border-radius:9px;font-size:0.88rem;">Join the Community</a>
+      <a href="#gallery" class="btn-ghost" style="padding:0.9rem 2.25rem;border-radius:9px;font-size:0.88rem;">Explore Gallery</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════ -->
+<div style="
+  background:var(--surface);
+  border-top:1px solid rgba(200,168,75,0.09);
+  border-bottom:1px solid rgba(200,168,75,0.09);
+">
+  <div style="
+    max-width:1280px; margin:0 auto; padding:0 2rem;
+    display:grid; grid-template-columns:repeat(4,1fr);
+  ">
+    <div class="stat-block" style="padding:2.2rem 2rem; text-align:center;">
+      <div class="gold-text" style="font-family:'Syne',sans-serif; font-size:2.6rem; font-weight:800; margin-bottom:0.2rem; line-height:1;">3</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.09em; text-transform:uppercase;">Creative Members</div>
+    </div>
+    <div class="stat-block" style="padding:2.2rem 2rem; text-align:center;">
+      <div class="gold-text" style="font-family:'Syne',sans-serif; font-size:2.6rem; font-weight:800; margin-bottom:0.2rem; line-height:1;">600+</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.09em; text-transform:uppercase;">Artworks Shared</div>
+    </div>
+    <div class="stat-block" style="padding:2.2rem 2rem; text-align:center;">
+      <div class="gold-text" style="font-family:'Syne',sans-serif; font-size:2.6rem; font-weight:800; margin-bottom:0.2rem; line-height:1;">2</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.09em; text-transform:uppercase;">Countries</div>
+    </div>
+    <div class="stat-block" style="padding:2.2rem 2rem; text-align:center;">
+      <div class="gold-text" style="font-family:'Syne',sans-serif; font-size:2.6rem; font-weight:800; margin-bottom:0.2rem; line-height:1;">$400+</div>
+      <div style="font-size:0.75rem; color:var(--text-muted); letter-spacing:0.09em; text-transform:uppercase;">Art Sales</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ABOUT / MISSION
+═══════════════════════════════════════════ -->
+<section id="about" style="padding:9rem 0; position:relative; overflow:hidden;">
+
+  <!-- Ambient glow -->
+  <div style="
+    position:absolute; top:50%; left:-180px; transform:translateY(-50%);
+    width:700px; height:700px; border-radius:50%;
+    background:radial-gradient(circle, rgba(139,47,201,0.055) 0%, transparent 65%);
+    pointer-events:none;
+  "></div>
+
+  <div class="section-wrap" style="display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;">
+
+    <!-- Left: Text -->
+    <div>
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:1.4rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.73rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); font-weight:500;">Our Mission</span>
+      </div>
+
+      <h2 style="font-size:clamp(2rem,3.2vw,3rem); line-height:1.08; margin-bottom:1.5rem;">
+        Redefining the<br>Creative <span class="gold-text">Frontier</span>
+      </h2>
+
+      <p style="color:var(--text-muted); font-size:1.02rem; margin-bottom:1.1rem;">
+        CreativeSociety.ai was founded on a simple belief: the most exciting art of our time lives
+        at the intersection of human vision and artificial intelligence.
+      </p>
+      <p style="color:var(--text-muted); font-size:1.02rem; margin-bottom:2.2rem;">
+        We've built a premium network where forward-thinking AI artists, designers, and creators
+        can connect, grow, and shape the future of digital artistry together.
+      </p>
+
+      <a href="#join" class="btn-gold" style="padding:0.82rem 2rem; border-radius:9px; font-size:0.84rem;">Become a Member</a>
+    </div>
+
+    <!-- Right: Feature card + floating badge -->
+    <div style="position:relative;">
+
+      <div class="glass-card" style="border-radius:22px; padding:2.75rem; position:relative; overflow:hidden;">
+
+        <!-- Purple glow corner -->
+        <div style="
+          position:absolute; top:-60px; right:-60px;
+          width:240px; height:240px; border-radius:50%;
+          background:radial-gradient(circle, rgba(139,47,201,0.25) 0%, transparent 70%);
+          pointer-events:none;
+        "></div>
+
+        <!-- Artist logo -->
+        <div style="text-align:center; margin-bottom:1.6rem;">
+          <img
+            src="brand_Assets/Picsart_25-08-08_21-57-40-346.png"
+            alt="Manifest Dr3ms"
+            style="height:100px; object-fit:contain; filter:drop-shadow(0 0 22px rgba(139,47,201,0.55));"
+          >
+        </div>
+
+        <div style="
+          width:60px; height:1px;
+          background:linear-gradient(90deg,transparent,var(--gold),transparent);
+          margin:0 auto 1.6rem;
+        "></div>
+
+        <p style="text-align:center; color:var(--text-muted); font-size:0.9rem; font-style:italic; line-height:1.8; position:relative; z-index:1;">
+          "CreativeSociety.ai gave me the platform to merge my visual dreams with AI's
+          limitless potential. This community changed everything."
+        </p>
+        <p style="text-align:center; margin-top:1.1rem; font-size:0.78rem; color:var(--gold); letter-spacing:0.08em; font-weight:600;">
+          — Manifest Dr3ms, AI Visual Artist
+        </p>
+      </div>
+
+      <!-- Online badge -->
+      <div class="glass" style="
+        position:absolute; bottom:-18px; left:-26px;
+        border-radius:12px; padding:0.85rem 1.25rem;
+        box-shadow:0 12px 36px rgba(0,0,0,0.4);
+      ">
+        <div style="display:flex; align-items:center; gap:9px;">
+          <span style="
+            width:9px; height:9px; border-radius:50%;
+            background:#22c55e;
+            box-shadow:0 0 9px #22c55e;
+            display:inline-block;
+          "></span>
+          <span style="font-size:0.78rem; color:var(--text-muted);">247 artists online now</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════ -->
+<section id="features" style="
+  padding:7rem 0;
+  background:var(--surface);
+  border-top:1px solid rgba(200,168,75,0.06);
+">
+  <div class="section-wrap">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:4rem;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:1rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.73rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); font-weight:500;">Platform Features</span>
+        <span class="gold-line"></span>
+      </div>
+      <h2 style="font-size:clamp(1.8rem,2.8vw,2.8rem); margin-bottom:0.9rem;">
+        Built for the <span class="gold-text">Modern AI Artist</span>
+      </h2>
+      <p style="color:var(--text-muted); max-width:500px; margin:0 auto; font-size:0.98rem;">
+        Everything you need to create, collaborate, and thrive in the AI art revolution.
+      </p>
+    </div>
+
+    <!-- 3×2 grid -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem;">
+
+      <!-- Card template (×6) -->
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(139,47,201,0.14); border:1px solid rgba(139,47,201,0.28);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+        ">◈</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">Curated Gallery</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">Showcase your finest AI creations in a premium environment curated for quality and innovation.</p>
+      </div>
+
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(200,168,75,0.1); border:1px solid rgba(200,168,75,0.22);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--gold);
+        ">⬡</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">Creative Collaborations</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">Connect and co-create with fellow AI artists, designers, and visionaries from across the globe.</p>
+      </div>
+
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(139,47,201,0.14); border:1px solid rgba(139,47,201,0.28);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+        ">⊹</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">AI Toolkits & Tutorials</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">Exclusive workflows, prompt engineering guides, and cutting-edge AI tutorials curated by masters.</p>
+      </div>
+
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(200,168,75,0.1); border:1px solid rgba(200,168,75,0.22);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--gold);
+        ">⬟</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">Marketplace Access</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">Sell your AI art, license your style, and monetize your creativity through our integrated marketplace.</p>
+      </div>
+
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(139,47,201,0.14); border:1px solid rgba(139,47,201,0.28);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+        ">✦</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">Live Events & Drops</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">Exclusive virtual exhibitions, live generative art sessions, and NFT drops with top creators.</p>
+      </div>
+
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2.1rem; border:1px solid rgba(200,168,75,0.1);">
+        <div style="
+          width:52px; height:52px; border-radius:13px; margin-bottom:1.4rem;
+          background:rgba(200,168,75,0.1); border:1px solid rgba(200,168,75,0.22);
+          display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--gold);
+        ">◎</div>
+        <h3 style="font-size:1.12rem; margin-bottom:0.65rem;">Member Portfolio</h3>
+        <p style="color:var(--text-muted); font-size:0.875rem; line-height:1.72;">A stunning portfolio page that reflects your AI aesthetic and connects you with collectors worldwide.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     GALLERY
+═══════════════════════════════════════════ -->
+<section id="gallery" style="padding:9rem 0; position:relative; overflow:hidden;">
+
+  <div style="
+    position:absolute; top:50%; right:-180px; transform:translateY(-50%);
+    width:700px; height:700px; border-radius:50%;
+    background:radial-gradient(circle, rgba(200,168,75,0.04) 0%, transparent 70%);
+    pointer-events:none;
+  "></div>
+
+  <div class="section-wrap">
+
+    <div style="text-align:center; margin-bottom:4rem;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:1rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.73rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); font-weight:500;">Member Showcase</span>
+        <span class="gold-line"></span>
+      </div>
+      <h2 style="font-size:clamp(1.8rem,2.8vw,2.8rem); margin-bottom:0.9rem;">
+        Art at the <span class="gold-text">Edge of Imagination</span>
+      </h2>
+      <p style="color:var(--text-muted); max-width:460px; margin:0 auto; font-size:0.98rem;">
+        A glimpse into the extraordinary work created by our community of AI visionaries.
+      </p>
+    </div>
+
+    <!-- Masonry-style grid -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:auto; gap:1rem;">
+
+      <!-- Tall left — deep purple crystalline -->
+      <div class="gal-item" style="grid-row:span 2; aspect-ratio:3/4.2;">
+        <div style="width:100%;height:100%;background:linear-gradient(145deg,#0D0920 0%,#1A0A3A 30%,#2D0F5E 55%,#160D30 80%,#08051A 100%);position:relative;overflow:hidden;">
+          <!-- Circuit pattern SVG -->
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.25;" viewBox="0 0 400 560" preserveAspectRatio="xMidYMid slice">
+            <defs><radialGradient id="g1" cx="50%" cy="40%"><stop offset="0%" stop-color="#C8A84B" stop-opacity="0.9"/><stop offset="100%" stop-color="#C8A84B" stop-opacity="0"/></radialGradient></defs>
+            <circle cx="200" cy="220" r="120" fill="none" stroke="#C8A84B" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="200" cy="220" r="80" fill="none" stroke="#B054E8" stroke-width="0.6" opacity="0.5"/>
+            <circle cx="200" cy="220" r="40" fill="none" stroke="#C8A84B" stroke-width="1" opacity="0.6"/>
+            <circle cx="200" cy="220" r="8" fill="#C8A84B" opacity="0.7"/>
+            <line x1="200" y1="100" x2="200" y2="0" stroke="#C8A84B" stroke-width="0.5" opacity="0.3"/>
+            <line x1="200" y1="340" x2="200" y2="560" stroke="#B054E8" stroke-width="0.5" opacity="0.3"/>
+            <line x1="80" y1="220" x2="0" y2="220" stroke="#C8A84B" stroke-width="0.5" opacity="0.3"/>
+            <line x1="320" y1="220" x2="400" y2="220" stroke="#C8A84B" stroke-width="0.5" opacity="0.3"/>
+            <ellipse cx="200" cy="220" rx="160" ry="60" fill="url(#g1)" opacity="0.15"/>
+          </svg>
+        </div>
+        <div class="gal-overlay"></div>
+        <div class="gal-label">
+          <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem; margin-bottom:3px;">Crystalline Dreams</div>
+          <div style="font-size:0.73rem; color:var(--gold);">@neuralvisions</div>
+        </div>
+      </div>
+
+      <!-- Neon Genesis — electric violet -->
+      <div class="gal-item" style="height:290px;">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#070318 0%,#1A0538 40%,#3D0F7A 65%,#120630 100%);position:relative;overflow:hidden;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.35;" viewBox="0 0 600 290" preserveAspectRatio="xMidYMid slice">
+            <defs><radialGradient id="g2" cx="60%" cy="50%"><stop offset="0%" stop-color="#B054E8" stop-opacity="0.8"/><stop offset="100%" stop-color="#B054E8" stop-opacity="0"/></radialGradient></defs>
+            <ellipse cx="360" cy="145" rx="220" ry="120" fill="url(#g2)" opacity="0.4"/>
+            <path d="M0 145 Q150 80 300 145 Q450 210 600 145" fill="none" stroke="#B054E8" stroke-width="1.5" opacity="0.5"/>
+            <path d="M0 175 Q150 110 300 175 Q450 240 600 175" fill="none" stroke="#8B2FC9" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="360" cy="145" r="50" fill="none" stroke="#B054E8" stroke-width="1" opacity="0.5"/>
+            <circle cx="360" cy="145" r="20" fill="#B054E8" opacity="0.2"/>
+          </svg>
+        </div>
+        <div class="gal-overlay"></div>
+        <div class="gal-label">
+          <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem; margin-bottom:3px;">Neon Genesis</div>
+          <div style="font-size:0.73rem; color:var(--gold);">@synthwave.art</div>
+        </div>
+      </div>
+
+      <!-- Golden Algorithm — gold geometric -->
+      <div class="gal-item" style="height:290px;">
+        <div style="width:100%;height:100%;background:linear-gradient(150deg,#0A0706 0%,#1C1205 35%,#3A2608 60%,#1A1104 100%);position:relative;overflow:hidden;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.4;" viewBox="0 0 600 290" preserveAspectRatio="xMidYMid slice">
+            <defs><radialGradient id="g3" cx="40%" cy="45%"><stop offset="0%" stop-color="#E6CE82" stop-opacity="0.9"/><stop offset="100%" stop-color="#C8A84B" stop-opacity="0"/></radialGradient></defs>
+            <ellipse cx="240" cy="130" rx="200" ry="130" fill="url(#g3)" opacity="0.35"/>
+            <polygon points="240,30 360,160 120,160" fill="none" stroke="#C8A84B" stroke-width="1" opacity="0.5"/>
+            <polygon points="240,80 320,170 160,170" fill="none" stroke="#E6CE82" stroke-width="0.6" opacity="0.4"/>
+            <circle cx="240" cy="130" r="25" fill="none" stroke="#C8A84B" stroke-width="1.5" opacity="0.6"/>
+            <circle cx="240" cy="130" r="8" fill="#C8A84B" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="gal-overlay"></div>
+        <div class="gal-label">
+          <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem; margin-bottom:3px;">Golden Algorithm</div>
+          <div style="font-size:0.73rem; color:var(--gold);">@auricdesigns</div>
+        </div>
+      </div>
+
+      <!-- Fractal Souls — dark teal/purple -->
+      <div class="gal-item" style="height:290px;">
+        <div style="width:100%;height:100%;background:linear-gradient(125deg,#040D12 0%,#071824 40%,#0D2D3A 65%,#061018 100%);position:relative;overflow:hidden;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.35;" viewBox="0 0 600 290" preserveAspectRatio="xMidYMid slice">
+            <defs><radialGradient id="g4" cx="45%" cy="50%"><stop offset="0%" stop-color="#22D3EE" stop-opacity="0.6"/><stop offset="60%" stop-color="#8B2FC9" stop-opacity="0.3"/><stop offset="100%" stop-color="#8B2FC9" stop-opacity="0"/></radialGradient></defs>
+            <ellipse cx="270" cy="145" rx="230" ry="130" fill="url(#g4)" opacity="0.5"/>
+            <circle cx="270" cy="145" r="90" fill="none" stroke="#22D3EE" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="270" cy="145" r="50" fill="none" stroke="#8B2FC9" stroke-width="0.8" opacity="0.4"/>
+            <circle cx="270" cy="145" r="20" fill="#22D3EE" opacity="0.1"/>
+            <path d="M180 145 Q220 100 270 145 Q320 190 360 145" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="gal-overlay"></div>
+        <div class="gal-label">
+          <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem; margin-bottom:3px;">Fractal Souls</div>
+          <div style="font-size:0.73rem; color:var(--gold);">@dreamweave.ai</div>
+        </div>
+      </div>
+
+      <!-- Infinite Canvas — wide, crimson + gold -->
+      <div class="gal-item" style="grid-column:span 2; height:290px;">
+        <div style="width:100%;height:100%;background:linear-gradient(160deg,#100505 0%,#1E0808 30%,#3A1040 55%,#1A0530 80%,#080410 100%);position:relative;overflow:hidden;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.35;" viewBox="0 0 1200 290" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <radialGradient id="g5a" cx="30%" cy="50%"><stop offset="0%" stop-color="#C8A84B" stop-opacity="0.7"/><stop offset="100%" stop-color="#C8A84B" stop-opacity="0"/></radialGradient>
+              <radialGradient id="g5b" cx="70%" cy="50%"><stop offset="0%" stop-color="#B054E8" stop-opacity="0.6"/><stop offset="100%" stop-color="#B054E8" stop-opacity="0"/></radialGradient>
+            </defs>
+            <ellipse cx="360" cy="145" rx="280" ry="130" fill="url(#g5a)" opacity="0.4"/>
+            <ellipse cx="840" cy="145" rx="280" ry="130" fill="url(#g5b)" opacity="0.4"/>
+            <path d="M0 145 Q300 60 600 145 Q900 230 1200 145" fill="none" stroke="#C8A84B" stroke-width="1.2" opacity="0.4"/>
+            <path d="M0 175 Q300 90 600 175 Q900 260 1200 175" fill="none" stroke="#B054E8" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="600" cy="145" r="40" fill="none" stroke="#E6CE82" stroke-width="1" opacity="0.4"/>
+            <circle cx="600" cy="145" r="12" fill="#C8A84B" opacity="0.35"/>
+          </svg>
+        </div>
+        <div class="gal-overlay"></div>
+        <div class="gal-label">
+          <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem; margin-bottom:3px;">Infinite Canvas</div>
+          <div style="font-size:0.73rem; color:var(--gold);">@cybercanvas</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;">
+      <a href="#" class="btn-ghost" style="padding:0.8rem 2.5rem; border-radius:9px; font-size:0.84rem;">View Full Gallery →</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     COMMUNITY / TESTIMONIALS
+═══════════════════════════════════════════ -->
+<section id="community" style="
+  padding:7rem 0;
+  background:var(--surface);
+  border-top:1px solid rgba(200,168,75,0.06);
+  position:relative; overflow:hidden;
+">
+
+  <div style="
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:1000px; height:500px; border-radius:50%;
+    background:radial-gradient(ellipse, rgba(139,47,201,0.07) 0%, transparent 65%);
+    pointer-events:none;
+  "></div>
+
+  <div class="section-wrap">
+
+    <div style="text-align:center; margin-bottom:4rem;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:1rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.73rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); font-weight:500;">Community Voices</span>
+        <span class="gold-line"></span>
+      </div>
+      <h2 style="font-size:clamp(1.8rem,2.8vw,2.8rem);">
+        Community <span class="gold-text">Voices</span>
+      </h2>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem;">
+
+      <!-- Testimonial 1 -->
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2rem; border:1px solid rgba(200,168,75,0.1);">
+        <div class="quote-mark">"</div>
+        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.76; margin-bottom:1.5rem; margin-top:-0.5rem;">
+          The connections I've made here have launched my career to places I never imagined. CreativeSociety.ai is the real deal.
+        </p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,168,75,0.3);background:linear-gradient(135deg,#1A0A3A,#3D1580);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:#C8A84B;flex-shrink:0;">AV</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem;">Aria Voss</div>
+            <div style="font-size:0.73rem; color:var(--gold);">Generative Art Director</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2rem; border:1px solid rgba(200,168,75,0.1);">
+        <div class="quote-mark">"</div>
+        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.76; margin-bottom:1.5rem; margin-top:-0.5rem;">
+          The gallery curation is unlike anything else. My work gets seen by the right people — curators, collectors, and fellow innovators.
+        </p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,168,75,0.3);background:linear-gradient(135deg,#0D0820,#3D0F7A);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:#B054E8;flex-shrink:0;">KM</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem;">Kai Morrow</div>
+            <div style="font-size:0.73rem; color:var(--gold);">AI Visual Poet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="glass-card feat-card" style="border-radius:18px; padding:2rem; border:1px solid rgba(200,168,75,0.1);">
+        <div class="quote-mark">"</div>
+        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.76; margin-bottom:1.5rem; margin-top:-0.5rem;">
+          I sold my first major commission through the marketplace within a week of joining. The platform just works at a premium level.
+        </p>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(200,168,75,0.3);background:linear-gradient(135deg,#0A0706,#3A2608);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:#E6CE82;flex-shrink:0;">ZR</div>
+          <div>
+            <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.88rem;">Zara Reeves</div>
+            <div style="font-size:0.73rem; color:var(--gold);">Digital Fashion Artist</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     JOIN CTA
+═══════════════════════════════════════════ -->
+<section id="join" style="padding:9rem 0; position:relative; overflow:hidden;">
+
+  <!-- Big purple glow -->
+  <div style="
+    position:absolute; top:-120px; left:50%; transform:translateX(-50%);
+    width:900px; height:900px; border-radius:50%;
+    background:radial-gradient(circle, rgba(139,47,201,0.11) 0%, transparent 60%);
+    pointer-events:none;
+  "></div>
+  <div style="
+    position:absolute; bottom:-100px; right:8%;
+    width:480px; height:480px; border-radius:50%;
+    background:radial-gradient(circle, rgba(200,168,75,0.05) 0%, transparent 70%);
+    pointer-events:none;
+  "></div>
+
+  <div style="max-width:760px; margin:0 auto; padding:0 2rem; text-align:center; position:relative; z-index:2;">
+
+    <img
+      src="brand_Assets/Create_an_ultrapremium_flagship_logo_for_the_brand_delpmaspu.png"
+      alt="CreativeSociety.ai"
+      style="height:100px; width:100px; object-fit:contain; margin:0 auto 2.2rem; display:block;
+             filter:drop-shadow(0 0 32px rgba(200,168,75,0.28));"
+    >
+
+    <h2 style="font-size:clamp(2rem,4.5vw,3.8rem); line-height:1.05; margin-bottom:1.2rem;">
+      Ready to Shape the<br><span class="gold-text">Future of Art?</span>
+    </h2>
+
+    <p style="color:var(--text-muted); font-size:1.02rem; max-width:500px; margin:0 auto 3rem; line-height:1.75;">
+      Apply for membership and join a global community of AI artists
+      building the next chapter of creative history.
+    </p>
+
+    <!-- Email form -->
+    <form style="display:flex; gap:0.75rem; max-width:480px; margin:0 auto 1.4rem;" onsubmit="return false;">
+      <input
+        type="email"
+        placeholder="your@email.com"
+        class="email-input"
+      >
+      <button type="submit" class="btn-gold" style="padding:0.9rem 1.75rem; border-radius:8px; font-size:0.84rem; white-space:nowrap;">Apply Now</button>
+    </form>
+
+    <p style="font-size:0.76rem; color:var(--text-muted); opacity:0.55;">
+      By applying you agree to our community guidelines. Applications reviewed within 48 hours.
+    </p>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer style="
+  background:var(--bg);
+  border-top:1px solid rgba(200,168,75,0.07);
+  padding:3.5rem 0 2rem;
+">
+  <div class="section-wrap">
+
+    <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem;">
+
+      <!-- Brand col -->
+      <div>
+        <a href="#" style="display:flex; align-items:center; gap:11px; text-decoration:none; margin-bottom:1.2rem;">
+          <img src="brand_Assets/Create_an_ultrapremium_flagship_logo_for_the_brand_delpmaspu.png" alt="logo" style="height:38px;width:38px;object-fit:contain;">
+          <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:var(--text);">creative<span class="gold-text">society.ai</span></span>
+        </a>
+        <p style="color:var(--text-muted); font-size:0.855rem; max-width:250px; line-height:1.72;">
+          The premier network for AI designers and artists redefining the boundaries of creative technology.
+        </p>
+      </div>
+
+      <!-- Link cols -->
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; font-weight:600;">Platform</div>
+        <div style="display:flex; flex-direction:column; gap:0.55rem;">
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Gallery</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Marketplace</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Events</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Tutorials</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; font-weight:600;">Community</div>
+        <div style="display:flex; flex-direction:column; gap:0.55rem;">
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Members</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Discord</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Blog</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Newsletter</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:0.75rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; font-weight:600;">Company</div>
+        <div style="display:flex; flex-direction:column; gap:0.55rem;">
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">About</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Careers</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Privacy</a>
+          <a href="#" style="color:var(--text-muted); font-size:0.855rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#E6CE82'" onmouseout="this.style.color=''">Terms</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div style="
+      padding-top:1.75rem;
+      border-top:1px solid rgba(200,168,75,0.06);
+      display:flex; align-items:center; justify-content:space-between;
+    ">
+      <p style="font-size:0.78rem; color:var(--text-muted); opacity:0.55;">© 2025 CreativeSociety.ai. All rights reserved.</p>
+      <div style="display:flex; gap:1.5rem;">
+        <a href="#" style="color:var(--text-muted); opacity:0.55; font-size:0.78rem; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.55'">Twitter</a>
+        <a href="#" style="color:var(--text-muted); opacity:0.55; font-size:0.78rem; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.55'">Instagram</a>
+        <a href="#" style="color:var(--text-muted); opacity:0.55; font-size:0.78rem; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.55'">Discord</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+      } else {
+        entry.target.classList.remove('in-view');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
